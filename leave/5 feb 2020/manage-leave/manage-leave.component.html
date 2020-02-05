@@ -1,0 +1,96 @@
+<section class="content-header">
+  <h2>
+    Leave
+    <small>Manage</small>
+  </h2>
+</section>
+<section class="content" id="popupContainer">
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="box box-primary">
+        <div class="box-header with-border">
+          <h3 class="box-title">
+            {{ service.companyDetails.CompanyFullName }}
+          </h3>
+        </div>
+        <div class="box-body form-content-ang7">
+          <form #manage_leave="ngForm">
+            <div class="row">
+              <div class="col-md-12 form-group np-lr">
+                <div class="col-md-6 ">
+                  <label>Location</label>
+                  <ng-select [(ngModel)]="service.leaveManageObj.slctdLocation" [bindLabel]="'locationName'"
+                    [disabled]=" service.disabledButtonAndField" [items]="locations" name="location"
+                    placeholder="Select Location" (change)="service.resetData();" required>
+                    <ng-template let-item="item" ng-label-tmp="ng-label-tmp">
+                      <span>
+                        {{ item.locationName }}
+                      </span> -
+                      <span>
+                        {{ item.companyLocationId }}
+                      </span>
+                    </ng-template>
+                    <ng-template let-index="index" let-item="item" let-search="searchTerm"
+                      ng-option-tmp="ng-option-tmp">
+                      <span [ngOptionHighlight]="search">
+                        {{ item.locationName }}</span>
+                      -
+                      <span [ngOptionHighlight]="search">
+                        {{ item.companyLocationId }}</span>
+                    </ng-template>
+                  </ng-select>
+                </div>
+                <div class="col-md-6 ">
+                  <label>What do you want to do?</label>
+                  <ng-select name="whatdoyouwanttodo" [items]="allActionTypes"
+                    [(ngModel)]="service.leaveManageObj.slctdAction" [bindLabel]="'actionType'"  groupBy="categoryName"
+                    placeholder="What do you want to do?" [disabled]="service.disabledButtonAndField" (change)="service.resetData()" required>
+                  </ng-select>
+                </div>
+              </div>
+                <div class="col-md-12 np-lr form-group">
+                  <div class="col-md-6" *ngIf="service.leaveManageObj.slctdAction">
+                    <label> {{(service.leaveManageObj.slctdAction.actionId ==1) && 'EL Generation' ||((service.leaveManageObj.slctdAction.actionId ==2) && 'Voucher' || 'Payment')}} Month
+                      <small class="italic-text">( MMM/YYYY )</small>
+                    </label>
+                    <div class="input-group">
+                      <span class="input-group-addon trigger" [owlDateTimeTrigger]="leavemonth"><i
+                          class="fa fa-calendar"></i>
+                        <input [owlDateTime]="leavemonth" style="width: 0px;height: 0px;padding: 0;border: none;">
+                      </span>
+                      <owl-date-time [pickerType]="'calendar'"
+                        (monthSelected)="handleMonthElLeaveInCash(leavemonth,$event)" [startView]="'year'" #leavemonth>
+                      </owl-date-time>
+                      <input type="text" name="leavemonth" (click)="openCalender(leavemonth);"
+                        class="form-control no-bg" [(ngModel)]="service.leaveManageObj.slctdLeaveMonth" readonly
+                        placeholder="Select Month" [disabled]="service.disableButtonAndFields" required>
+                    </div>
+                  </div>
+                  <div class="col-md-6 " *ngIf="service.leaveManageObj.slctdAction && service.leaveManageObj.slctdAction.actionId == 2">
+                    <label>Voucher Category ?</label>
+                    <ng-select name="vouchercategory" [items]="service.voucherCategory"
+                      [(ngModel)]="service.leaveManageObj.slctdVoucherCategory" [bindLabel]="'categoryName'"  groupBy="categoryName"
+                      placeholder="Select Voucher Category" [disabled]="service.disabledButtonAndField" (change)="service.resetData()" required>
+                    </ng-select>
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  
+                    <button type="button" class="btn btn-primary pull-right"
+                      [disabled]="service.disableButtonAndFields || manage_leave.invalid " col-button-only
+                      (click)=" serverCallsInElEncash();">Get
+                      Details</button>
+                 
+                </div>
+            </div>
+          </form>
+          <div [@leave]="service.animationState">
+            <ng-container  *ngIf = "service.leaveManageObj.slctdAction && service.leaveManageObj.slctdAction.categoryId == 1 && !service.hideTpls">
+              <app-el-encashment></app-el-encashment>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>  

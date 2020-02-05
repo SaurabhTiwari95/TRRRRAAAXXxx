@@ -1,0 +1,112 @@
+<hr class="custom-hr-with-large-width-ang7" *ngIf="  service.employeeDetails.length">
+<div class="row" *ngIf=" (service.leaveManageObj.slctdVoucherCategory && service.leaveManageObj.slctdVoucherCategory.categoryId==1) && service.employeeDetails.length">
+  <div class="col-md-12">
+    <h4 class="col-md-12 heading-with-hr">Employee Details for Voucher Creation</h4>
+    <div class="col-md-12 form-group np-lr">
+      <div class="col-md-offset-10">
+        <span style="display: inline-block;width:98%;">
+          <input type="text" placeholder="Search Here" class="form-control" (keyup)='filterLeaveTable($event)'>
+        </span>
+      </div>
+    </div>
+    <div class="col-md-12 np-lr form-group">
+      <ngx-datatable class="material" [columnMode]="'flex'" [headerHeight]="50" [limit]="10" [footerHeight]="50"
+        [rowHeight]="'auto'" [rows]="service.dataForTable" [scrollbarH]="true" inline-editable-table>
+        <ngx-datatable-column name="" [flexGrow]="0.1" [maxWidth]="50" [sortable]="true" prop="empId">
+          <ng-template let-column="column" ngx-datatable-header-template>
+            <div class="input-group checkbox-only">
+              <div class=" disable-checked-icheck">
+                <div class="icheckbox_flat-green checked" style="position: absolute;">
+                  <label class="control control--checkbox">
+                    <input type="checkbox" name="selectallemployee" [(ngModel)]="service.isAllSelected"
+                      [disabled]="service.disableButtonAndFields" (change)="checkUncheckAll();"
+                      title="Click to select all employees" />
+                    <div class="control__indicator "></div>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <div class="input-group checkbox-only">
+              <div class=" disable-checked-icheck">
+                <div class="icheckbox_flat-green checked" style="position: absolute;">
+                  <label class="control control--checkbox">
+                    <input type="checkbox" name="selectallemployee" [(ngModel)]="row.isSelected"
+                      (change)="checkIfEmpSlctd(row);" [disabled]="service.disableButtonAndFields" />
+                    <div class="control__indicator "></div>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <!-- checkBox Ends Here -->
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Employee " [flexGrow]="0.3" [minWidth]="200" [sortable]="true" prop="empName">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.employeeName }} - {{ row.employeeId }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Divison" [flexGrow]="0.2" [minWidth]="100" [sortable]="true" prop="divison">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.division }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Department" [flexGrow]="0.2" [minWidth]="100" [sortable]="true" prop="department">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.department }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column [flexGrow]="0.1" [minWidth]="100" [sortable]="true" prop="encashEl">
+          <ng-template let-column="column" ngx-datatable-header-template>
+            <span class="pull-right">
+              Encashed EL(s)
+            </span>
+          </ng-template>
+          <ng-template let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+            <span class="pull-right">
+              <!-- <input type="number" class="editable form-control mgn-t-5" style="min-width: 80px; text-align: right;"
+                name="encashel{{rowIndex}}" [(ngModel)]="row.encashEl" required (input)="checkEncashEL(row);"
+                min="row.balanceEl" placeholder="Encash EL" /> -->
+                <!-- bind the value of the updated Els here -->
+                {{ row.earnedLeavesEncashed }}
+            </span>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column [flexGrow]="0.2" [minWidth]="100" [sortable]="true" prop="encashedAmount">
+          <ng-template let-column="column" ngx-datatable-header-template>
+            <span class="pull-right">
+              Encashed Amount
+            </span>
+          </ng-template>
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <span class="pull-right" *ngIf="row.encashedAmount >= 0;else showInvalidMsg">
+              {{row.encashedAmount | currency:"INR"  }}
+            </span>
+            <ng-template #showInvalidMsg>
+              <span class="pull-right text-danger">
+                {{row.encashedAmount}}
+              </span>
+            </ng-template>
+            <!--the amount will be updated after an employee changes the encashEl field-->
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+      <div class="row">
+      <div class="col-md-12 np-lr  form-group">
+        <div class="col-md-4">
+          <i><b>Employee(s) Selected :</b> {{ service.totalSlctdEmp }} / {{ service.employeeDetails.length }}</i>
+        </div>
+        <div class="col-md-4">
+          <span><i><b>Voucher Cost :</b></i></span>
+        </div>
+        <div class="col-md-4">
+        <button type="button"  class="btn btn-primary pull-right">Create Voucher</button>
+      </div>
+      </div>
+    </div>
+      <div class="col-md-12 np-lr">
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,114 @@
+<hr class="custom-hr-with-large-width-ang7" *ngIf="service.employeeDetails.length">
+<div class="row" *ngIf="service.employeeDetails.length">
+  <div class="col-md-12">
+    <h4 class="col-md-12 heading-with-hr"> Employee Details</h4>
+    <!-- Search bar starts here -->
+    <div class="col-md-12 form-group np-lr">
+      <!-- <div class="col-md-12"> -->
+      <div class="col-md-10 np-lr col-xs-12">
+        <p><b>Note:</b> Set 0 for those users who do not want to Encash their EL(s).</p>
+        <!-- <input type="number" placeholder="Encash Limit">
+        <button type="submit" (click)="function to calculate encash El"></button> -->
+      </div>
+      <div class="col-md-2 np-lr col-xs-12">
+        <span style="display: inline-block;width:98%;">
+          <input type="text" placeholder="Search Here" class="form-control" (keyup)='filterLeaveTable($event)'>
+        </span>
+      </div>
+      <!-- </div> -->
+    </div>
+    <!-- Search bar Ends here -->
+ 
+    <div class="col-md-12 np-lr form-group">
+      <!-- [maxWidth]="100" -->
+      <ngx-datatable class="material" [columnMode]="'force'" [headerHeight]="50" [limit]="10" [footerHeight]="50"
+        [rowHeight]="'auto'" [rows]="service.dataForTable" [scrollbarH]="true" inline-editable-table>
+        <!-- Name -->
+        <ngx-datatable-column name="Employee " [maxWidth]="500" [sortable]="true" prop="employeeName">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.employeeName }} - {{ row.employeeId }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Division" [maxWidth]="200" [sortable]="true" prop="division">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.division }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Department" [maxWidth]="200" [sortable]="true" prop="department">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.department }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column [maxWidth]="200" [sortable]="true" prop="basicAmount">
+          <ng-template let-column="column" ngx-datatable-header-template>
+            <span class="pull-right">
+              Basic Salary
+            </span>
+          </ng-template>
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <span class="pull-right">
+              {{ row.basicAmount | currency:"INR"}}
+            </span>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column [maxWidth]="200" [sortable]="true" prop="balanceLeaves">
+          <ng-template let-column="column" ngx-datatable-header-template>
+            <span class="pull-right">
+              Balance EL
+            </span>
+          </ng-template>
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <span class="pull-right">
+              {{ row.balanceLeaves }}
+            </span>
+          </ng-template>
+          <!--This is a self calculated field which is editable according to the employee,
+          by default value will be balanceLeaves-encashEl(in case balanceLeaves is less than 30 the
+          corresponding encashEl will be zero )
+        -->
+        </ngx-datatable-column>
+        <ngx-datatable-column [maxWidth]="200" [sortable]="true" prop="earnedLeavesEncashed">
+          <ng-template let-column="column" ngx-datatable-header-template>
+            <span class="pull-right">
+              Encash EL
+            </span>
+          </ng-template>
+          <ng-template let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+            <span class="ng-star-inserted pull-right" [ngClass]="{'modified-row' : row.encashElChanged}">
+              <input type="number" class="editable form-control mgn-t-5" style="max-width: 80px; text-align: right;"
+                name="encashel{{rowIndex}}" [(ngModel)]="row.earnedLeavesEncashed" required (input)="checkEncashEL(row);"
+                max="row.balanceLeaves" placeholder="Encash EL"  [disabled]=" service.disabledButtonAndField " />
+            </span>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column [maxWidth]="250" [sortable]="true" prop="encashedAmount">
+          <ng-template let-column="column" ngx-datatable-header-template>
+            <span class="pull-right">
+              Encash Amount
+            </span>
+          </ng-template>
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <span class="pull-right" *ngIf="row.encashedAmount >= 0;else showInvalidMsg">
+              {{row.encashedAmount | currency:"INR"  }}
+            </span>
+            <ng-template #showInvalidMsg>
+              <span class="pull-right text-danger">
+                {{row.encashedAmount}}
+              </span>
+            </ng-template>
+            <!--the amount will be updated after an employee changes the encashEl field-->
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+      <div class="col-md-12 np-lr">
+        <div class="col-md-6 np-lr">
+          <i><b>Total Employee(s) : {{ service.employeeDetails.length }} </b></i>
+        </div>
+        <button type="button" class="btn btn-primary pull-right" 
+        [disabled]=" dataNotChanged () == 0 || service.disabledButtonAndField " (click)="upsertleavesEncashed()">Update Details</button>
+        <!-- Make the button disable on loading the page and if any of the checkbox is clicked it will be enabled or if the EncashEl fiel is editted then it will aslo be enabled -->
+        <!-- write a click button for saving the fields -->
+      </div>
+    </div>
+  </div>
+</div>

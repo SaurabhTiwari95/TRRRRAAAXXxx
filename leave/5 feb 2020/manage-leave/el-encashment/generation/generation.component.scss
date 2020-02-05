@@ -1,0 +1,82 @@
+.ngx-datatable.material[inline-editable-table] .modified-row .editable+span:after {
+    top: -31px;
+  }
+  
+  .ngx-datatable.material[inline-editable-table] .editable 
+      {
+          padding: 0;
+          height: auto;
+          font-size: 14px;
+          border: none;
+          border-bottom: 1px solid transparent ;
+          background-color: transparent;
+      }
+  
+      .ngx-datatable.material[inline-editable-table] .has-error .editable , 
+      .ngx-datatable.material[inline-editable-table] .has-error .editable:focus 
+      {
+          border: none;
+          outline: none;
+          border-bottom: 1px solid rgb(237, 132, 132);
+      }
+      
+      .ngx-datatable.material[inline-editable-table] .modified-row .editable+span 
+      {
+          position: relative;
+      }
+      
+      .ngx-datatable.material[inline-editable-table] .modified-row .editable+span:after 
+      {
+          content: '*';
+          position: absolute;
+          color: #fd6d26;
+          font-size: 20px;
+          top: -7px;
+          left: -5px;
+      }
+  
+      ::ng-deep.ngx-datatable.material[inline-editable-table] .modified-row .editable 
+      {
+          color: #fd6d26;
+          position: relative;
+      }
+  
+      .ngx-datatable.material[inline-editable-table] .editable:focus 
+      {
+          border: none;
+          border-bottom: 1px solid rgb(60, 141, 188);
+          outline: none;
+      }
+      
+      .ngx-datatable.material[inline-editable-table] input[type=date]::-webkit-inner-spin-button,
+      .ngx-datatable.material[inline-editable-table] input[type=date]::-webkit-clear-button,
+      .ngx-datatable.material[inline-editable-table] input[type=date]::-webkit-calendar-picker-indicator 
+      {
+          display: none;
+          -webkit-appearance: none;
+      }
+      
+      .ngx-datatable.material[inline-editable-table] input[type=number]::-webkit-inner-spin-button,
+      .ngx-datatable.material[inline-editable-table] input[type=number]::-webkit-outer-spin-button, 
+      .ngx-datatable.material[inline-editable-table] input[type=time]::-webkit-inner-spin-button ,
+    .ngx-datatable.material[inline-editable-table] input[type=time]::-webkit-clear-button,
+      .ngx-datatable.material[inline-editable-table] input[type=time]::-webkit-outer-spin-button { 
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          appearance: none;
+          margin: -2px; 
+      }
+  
+      /* To fix the right alignment on input type number without spinner */
+    .ngx-datatable.material[inline-editable-table] input[type=number]
+      { 
+          
+          padding-right: 11px;
+      }
+      .mgn-t-5{
+        margin-top: 5px;
+      }
+      span.datatable-header-cell-wraper.ng-star-inserted{
+        color : #a94442
+    }
+    

@@ -1,0 +1,9 @@
+<ng-container *ngIf = "(service.leaveManageObj.slctdAction && service.leaveManageObj.slctdAction.actionId == 1)">
+    <app-generation></app-generation>
+</ng-container>
+<ng-container *ngIf = "service.leaveManageObj.slctdAction && service.leaveManageObj.slctdAction.actionId == 2" >
+    <app-voucher ></app-voucher>
+</ng-container>
+<ng-container *ngIf = "(service.leaveManageObj.slctdAction && service.leaveManageObj.slctdAction.actionId == 3)">
+    <app-payment></app-payment>
+</ng-container>
