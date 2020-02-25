@@ -1,0 +1,127 @@
+<section class="content-header">
+  <h2>
+    Arrear
+    <small>Management</small>
+  </h2>
+</section>
+<section class="content" id="popupContainer">
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="box box-primary">
+        <div class="box-header with-border">
+          <h3 class="box-title">
+            {{ service.companyDetails.CompanyFullName }}
+          </h3>
+        </div>
+        <div class="box-body form-content-ang7">
+          <form #arrear_manage="ngForm">
+            <div class="row">
+              <div class="col-md-12 form-group np-lr">
+                <div class="col-md-6 ">
+                  <label>Location</label>
+                  <ng-select [(ngModel)]="service.arrearManageObj.slctdLocation" [bindLabel]="'locationName'"
+                    [disabled]="service.disabledButtonAndField"
+                    [items]="locations" name="location" placeholder="Select Location"
+                    required>
+                    <ng-template let-item="item" ng-label-tmp="ng-label-tmp">
+                      <span>
+                        {{ item.locationName }}
+                      </span> -
+                      <span>
+                        {{ item.companyLocationId }}
+                      </span>
+                    </ng-template>
+                    <ng-template let-index="index" let-item="item" let-search="searchTerm"
+                      ng-option-tmp="ng-option-tmp">
+                      <span [ngOptionHighlight]="search">
+                        {{ item.locationName }}</span>
+                      -
+                      <span [ngOptionHighlight]="search">
+                        {{ item.companyLocationId }}</span>
+                    </ng-template>
+                  </ng-select>
+                </div>
+                <div class="col-md-6 ">
+                  <label>What do you want to do?</label>
+                  <ng-select name="whatdoyouwanttodo" [items]="service.allActionTypes" [(ngModel)]="service.arrearManageObj.slctdAction" 
+                  [bindLabel]="'actionType'" groupBy="categoryName" placeholder="What do you want to do?"  (change)="service.resetData();setAnimationState();"
+                  [disabled]="!service.arrearManageObj.slctdLocation || service.disabledButtonAndField" required>
+                   
+                  </ng-select>
+                </div>
+              </div>
+              <!-- <div class="row "> -->
+                <div class="col-md-12 np-lr form-group">
+                  <div class="col-md-3" *ngIf="service.arrearManageObj.slctdAction && service.arrearManageObj.slctdAction.actionId == '2'">
+                    <label>Arrear Payment Month
+                      <small class="italic-text">( DD-MM-YYYY )</small>
+                    </label>
+                    <div class="input-group">
+                      <span class="input-group-addon trigger" [owlDateTimeTrigger]="arrearmonth">
+                        <i class="fa fa-calendar"></i>
+                        <input [owlDateTime]="arrearmonth" style="width: 0px;height: 0px;padding: 0;border: none;">
+                      </span>
+                      <owl-date-time [pickerType]="'calendar'" (monthSelected)="handleMonthInArrear(arrearmonth,$event)"
+                        [startView]="'year'" #arrearmonth>
+                      </owl-date-time>
+                      <input type="text" name="arrearmonth" (click)="openCalender(arrearmonth);" class="form-control no-bg"
+                        [(ngModel)]="service.arrearManageObj.slctdArrearMonth" readonly placeholder="Select Month" required>
+                    </div>
+                  </div>
+                  <div class="col-md-3" *ngIf="service.arrearManageObj.slctdAction && service.arrearManageObj.slctdAction.actionId == '1'">
+                    <label>Arrear Voucher Date 
+                      <small class="italic-text">( DD-MM-YYYY )</small>
+                    </label>
+                    <div class="input-group">
+                      <div class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                      </div>
+                      <input type="text" class="form-control" name="daterangeInput" daterangepicker [options]="arrearOptions" 
+                      (selectedArrearDate)="selectedArrearDate($event, service.arrearManageObj.arrearDaterange)" />
+                    </div>
+                  </div>
+                  <div class="col-md-3 " *ngIf="service.arrearManageObj.slctdAction && service.arrearManageObj.slctdAction.actionId == '1'">
+                    <label>Voucher Category ?</label>
+                    <ng-select name="vouchercategory" [items]="service.voucherCategory" [(ngModel)]="service.arrearManageObj.slctdVoucherCategory"
+                     [bindLabel]="'categoryName'" placeholder="Select Voucher Category" [disabled]="service.disabledButtonAndField" 
+                     (change)="service.resetData()" required>
+                    </ng-select>
+                  </div>
+                  <div class="col-md-3 " *ngIf="service.arrearManageObj.slctdAction && service.arrearManageObj.slctdAction.actionId == 2">
+                    <label>Payment Mode</label>
+                    <ng-select name="payment" [items]="service.paymentModes"
+                    [(ngModel)]="service.arrearManageObj.slctdPaymentMode" [bindLabel]="'modeName'" placeholder="Select Payment Mode" 
+                    [disabled]="service.disabledButtonAndField" (change)="service.resetData()" required>
+                    </ng-select>
+                  </div>
+                  <div class="col-md-3 pull-right">
+                    <button type="button" class="btn btn-primary pull-right"
+                      [disabled]="service.disabledButtonAndField || arrear_manage.invalid " (click)="serverCallsInArrear()" col-button-only>Get Details
+                    </button>
+                  </div>
+                </div>
+              <!-- </div> -->
+            </div>
+          </form>
+          <ng-container *ngIf = "((service.arrearManageObj.slctdVoucherCategory && service.arrearManageObj.slctdVoucherCategory.categoryId == 1)
+          && service.empArrayInArrearVoucherCreation.length)">
+            <app-arrear-voucher-creation></app-arrear-voucher-creation>
+          </ng-container>
+          <ng-container *ngIf = "((service.arrearManageObj.slctdVoucherCategory && service.arrearManageObj.slctdVoucherCategory.categoryId == 2)
+          && service.voucherDeletionDetails.length)">
+            <app-arrear-voucher-deletion></app-arrear-voucher-deletion>
+          </ng-container>
+          <ng-container *ngIf="(service.arrearManageObj.slctdAction && service.arrearManageObj.slctdAction.actionId == 2 && service.animationState != 'none' )">
+            <app-arrear-payment></app-arrear-payment>
+          </ng-container>
+          <!-- <ng-container *ngIf = "(service.arrearManageObj.slctdAction && service.arrearManageObj.slctdAction.actionId == 3)">
+            <app-arrear-payment></app-arrear-payment>
+          </ng-container> -->
+          <!-- <ng-container *ngIf="(service.arrearManageObj.slctdAction.categoryId==1) && (service.arrearManageObj.slctdVoucherCategory.categoryId==1) ">
+            <app-arrear-voucher-creation></app-arrear-voucher-creation>
+          </ng-container> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

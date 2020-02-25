@@ -1,0 +1,202 @@
+<hr class="custom-hr-with-large-width-ang7">
+<div class="col-md-12 form-group ">
+  <h4 class="heading-with-hr">Already Created Voucher details | Total Employees :
+    <span class="italic-text">{{service.voucherDeletionDetails.totalEmployees}}</span>
+  </h4>
+  <div>
+<div class="panel-group" id="accordion">
+  <div class="panel panel-default"
+    *ngFor="let voucher of service.voucherDeletionDetails.voucherDetails ;let i = index"
+    style="margin-bottom: 15px">
+    <div class="panel-heading" style="border-bottom: 1px;background-color: transparent;">
+      <h4 class="panel-title">
+        <div class="user-block np-lr">
+          <span style="margin-left: 0px">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{i}}"  title="Click to view vouchers">
+             {{i+1}}) - Voucher for : <span class="italic-text"> {{voucher.numberOfEmployees}} Employees </span> | Voucher Date - {{voucher.voucherArray[0].voucherDate}}
+            </a>
+              <button type="button" class="btn action-button btn-danger pull-right" title="click here to delete Voucher(s)">
+                <!-- (click) = "function to delete the vouchers" -->
+                <i class="fa fa-trash"></i>
+              </button>
+              <button type="button" class="btn action-button btn-primary pull-right" (click)="viewVoucherDetails(i);" title="Click here to see Employees details" style="margin-right: 10px;" >
+                <i class="fa fa-eye"></i>
+              </button>
+          </span>
+        </div>
+      </h4>
+    </div>
+    <div id="collapse{{i}}" class="panel-collapse collapse">
+      <div class="panel-body">
+        <ng-container>
+                  <div class="col-md-12 form-group">
+                    <table class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th>Voucher Type</th>
+                          <th>Voucher Number</th>
+                          <th>Voucher Date</th>
+                        </tr>
+                      </thead>
+                      <tbody all-td-vertical-align-middle>
+                        <tr
+                          *ngFor="let voucherType of service.voucherDeletionDetails.voucherDetails[i].voucherArray; let j = index"
+                           title="Click to view voucher details">
+                           <!--This is a server call for the Voucher details (click)="getVoucherDetails(i, j);" -->
+                          <td><a>{{voucherType.voucherType}}</a></td>
+                          <td><a>{{voucherType.voucherNumber}}</a></td>
+                          <td><a>{{voucherType.voucherDate}}</a></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>  
+<ngx-smart-modal #modalRefVoucherDeletion identifier="voucherDetails">
+  <div class="header" style="margin-left: 5px;">
+    <h4 class="heading-with-hr">
+      Voucher Number :
+      {{ voucherDetailModalObj.voucherNumber }}
+      | Voucher Date :
+      {{ voucherDetailModalObj.voucherDate }}
+    </h4>
+  </div>
+  <div class="body">
+    <div class="row">
+        <div class="col-md-12">
+          <table class="table table-hover table-striped ">
+            <thead>
+              <tr>
+                <th>Ledger Id</th>
+                <th>Ledger Name</th>
+                <th>Cash Group</th>
+                <th numeric-column>Amount</th>
+                <th status-column>Dr/Cr</th>
+                <th>Narration</th>
+                <th>Created At</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let voucher of voucherDetailModalObj.arrayOfvoucherDetailsOfVoucherType">
+                <td>{{ voucher.ledgerId }}</td>
+                <td>{{ voucher.ledgerName }}</td>
+                <td>{{ voucher.cashGroupName ? voucher.cashGroupName : "NA" }}</td>
+                <td numeric-column>{{ voucher.amount | currency : "INR" }}</td>
+                <td status-column>
+                  <span class="label" [ngClass]="{
+                            'label-success': voucher.transactionType == 'C',
+                            'label-danger': voucher.transactionType == 'D'
+                          }">
+                    {{ voucher.transactionType == "D" ? "Debit" : "Credit" }}
+                  </span>
+                </td>
+                <td>{{ voucher.narration }}</td>
+                <td>{{ voucher.createdAt }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div style="border-top: 1px solid #ccc">
+        <div class="col-md-12" style="padding-top: 10px;padding-right: 0px;">
+          <button class="btn btn-danger pull-right" (click)="closeModal()">
+            Close
+          </button>
+        </div>
+      </div>
+  </div>  
+</ngx-smart-modal>
+<ngx-smart-modal #modalRefAllVoucherDetails identifier="voucherEmpDetails">
+  <div class="header" style="margin-left: 5px;">
+    <h4 class="heading-with-hr">
+      Employee Details
+    </h4>
+  </div>
+  <div class="body">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="col-md-10"></div>
+          <div class="col-md-2 np-lr">
+            <span style="display: inline-block;width: 100%;">
+              <input type="text" placeholder="Search Here" class="form-control" (input) = "searchEmpDetailInVoucherDel($event)" >
+            </span>
+          </div>
+        </div>
+        <div class="col-md-12 ">
+          <ngx-datatable class="material" [columnMode]="'flex'" [headerHeight]="50" [limit]="10" [footerHeight]="50"
+          [rowHeight]="'auto'" [rows]="filteredData" inline-editable-table>
+          <!-- [scrollbarH]="true" -->
+          <ngx-datatable-column name="Sl No." [flexGrow]="0.5" [maxWidth]="60" [sortable]="true">
+            <ng-template let-row="row" let-rowIndex = "rowIndex" ngx-datatable-cell-template>
+              {{ rowIndex + 1 }}
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Employee " [flexGrow]="1" [minWidth]="200" [sortable]="true" prop="employeeName">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              {{ row.employeeName }} - {{ row.employeeId }}
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Divison" [flexGrow]="1" [minWidth]="100" [sortable]="true" prop="divisionName">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              {{ row.divisionName }}
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Department" [flexGrow]="1" [minWidth]="100" [sortable]="true" prop="departmentName">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              {{ row.departmentName }}
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Month" [flexGrow]="1" [minWidth]="100" [sortable]="true" prop="arrearMonth">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              {{ row.arrearMonth }}
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Year" [flexGrow]="1" [minWidth]="100" [sortable]="true" prop="arrearYear">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              {{ row.arrearYear }}
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Pay Days" [flexGrow]="1" [minWidth]="100" [sortable]="true" prop="payDays">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              {{ row.payDays }}
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Work Days" [flexGrow]="1" [minWidth]="100" [sortable]="true" prop="workDays">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              {{ row.workDays }}
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Previous Gross" [flexGrow]="1" [minWidth]="100" [sortable]="true" prop="previousGross">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              {{ row.previousGross }}
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Current Gross" [flexGrow]="1" [minWidth]="100" [sortable]="true" prop="currentGross">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              {{ row.currentGross }}
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Arrear" [flexGrow]="1" [minWidth]="100" [sortable]="true" prop="arrear">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              {{ row.arrearAmount }}
+            </ng-template>
+          </ngx-datatable-column>
+        </ngx-datatable>
+        </div>
+      </div>
+        <div class="col-md-12">
+          <div style="border-top: 1px solid #ccc">
+            <div class="col-md-12" style="padding-top: 10px;padding-right: 0px;">
+              <button class="btn btn-danger pull-right" (click)="closeAllVoucherDetails()">
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+  </div>  
+</ngx-smart-modal>

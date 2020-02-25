@@ -1,0 +1,212 @@
+<hr class="custom-hr-with-large-width-ang7">
+<div class="row" *ngIf="service.empArrayInArrearVoucher.length" >
+ <div class="col-md-12">
+   <h4 class="col-md-12 heading-with-hr">Employee Details for Voucher Creation
+     <span class="pull-right italic-text">Employee(s) Selected : {{ service.totalSlctdEmp }} / {{ service.filteredArrayInArrearVoucher.length }}</span>
+   </h4>
+ </div>
+   <div class="col-md-12 form-group">
+     <div class="col-md-offset-10">
+       <span style="display: inline-block;width:98%;">
+         <input type="text" placeholder="Search Here" class="form-control" (keyup)='filterArrearTable($event)'>
+       </span>
+     </div>
+   </div>
+   <div class="col-md-12 form-group">
+     <!--  [maxWidth]="60" -->
+     <ngx-datatable class="material" [columnMode]="'flex'" [headerHeight]="50" [limit]="10" [footerHeight]="50"
+       [rowHeight]="'auto'" [rows]="service.filteredArrayInArrearVoucherCreation" [scrollbarH]="true" inline-editable-table>
+       <ngx-datatable-column name="" [flexGrow]="0.1" [sortable]="true" prop="empId">
+         <ng-template let-column="column" ngx-datatable-header-template>
+           <span *ngIf="searchingStart">Select</span>
+           <div class="input-group checkbox-only" *ngIf="!searchingStart">
+             <div class=" disable-checked-icheck">
+               <div class="icheckbox_flat-green checked" style="position: absolute;">
+                 <label class="control control--checkbox">
+                   <input type="checkbox" name="selectallemployee" [(ngModel)]="service.isAllEmpSlctdInVoucherCreation"
+                     [disabled]="service.disableButtonAndFields" (change)="checkUncheckAll();"
+                     title="Click to select all employees" />
+                   <div class="control__indicator "></div>
+                 </label>
+               </div>
+             </div>
+           </div>
+         </ng-template>
+         <ng-template let-row="row" ngx-datatable-cell-template>
+           <div class="input-group checkbox-only">
+             <div class=" disable-checked-icheck">
+               <div class="icheckbox_flat-green checked" style="position: absolute;">
+                 <label class="control control--checkbox">
+                   <input type="checkbox" name="selectallemployee" [(ngModel)]="row.isSelected"
+                     (change)="checkIfEmpSlctd(row);" [disabled]="service.disableButtonAndFields" />
+                   <div class="control__indicator "></div>
+                 </label>
+               </div>
+             </div>
+           </div>
+           <!-- checkBox Ends Here -->
+         </ng-template>
+       </ngx-datatable-column>
+       <ngx-datatable-column name="Employee " [flexGrow]="0.7" [sortable]="true" prop="employeeName">
+         <ng-template let-row="row" ngx-datatable-cell-template>
+           {{ row.employeeName }} - {{ row.employeeId }}
+         </ng-template>
+       </ngx-datatable-column>
+       <ngx-datatable-column name="Divison" [flexGrow]="0.3" [sortable]="true" prop="divisionName">
+         <ng-template let-row="row" ngx-datatable-cell-template>
+           {{ row.divisionName }}
+         </ng-template>
+       </ngx-datatable-column>
+       <ngx-datatable-column name="Department" [flexGrow]="0.4" [sortable]="true" prop="departmentName">
+         <ng-template let-row="row" ngx-datatable-cell-template>
+           {{ row.departmentName }}
+         </ng-template>
+       </ngx-datatable-column>
+       <!--  [maxWidth]="80" -->
+       <ngx-datatable-column name="Month" [flexGrow]="0.2" [sortable]="true" prop="arrearMonth">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{ row.arrearMonth | uppercase }}
+        </ng-template>
+      </ngx-datatable-column>
+      <!--  [maxWidth]="70" -->
+      <ngx-datatable-column name="Year" [flexGrow]="0.1" [sortable]="true" prop="arrearYear">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <span class="pull-right">{{ row.arrearYear }}</span>
+        </ng-template>
+      </ngx-datatable-column>
+      <!--  [maxWidth]="90" -->
+      <ngx-datatable-column name="Pay Days" [flexGrow]="0.2" [sortable]="true" prop="paydays">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <span class="pull-right">{{ row.paydays }}</span>
+        </ng-template>
+      </ngx-datatable-column>
+      <!-- [maxWidth]="90" -->
+      <ngx-datatable-column name="Work Days" [flexGrow]="0.2" [sortable]="true" prop="workdays">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <span class="pull-right">{{ row.workdays }}</span>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Previous Gross" [flexGrow]="0.3" [sortable]="true" prop="previousGross">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <span class="pull-right">{{ row.previousGross | currency:"INR" }}</span>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Current Gross" [flexGrow]="0.3" [sortable]="true" prop="currentGross">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <span class="pull-right">{{ row.currentGross | currency:"INR" }}</span>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Arrear" [flexGrow]="0.3" [sortable]="true" prop="arrear">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <span class="pull-right">{{ row.arrear | currency:"INR" }}</span>
+        </ng-template>
+      </ngx-datatable-column>
+     </ngx-datatable>
+   </div>
+ </div> 
+ <div class="row">
+     <div class="col-md-12 np-lr form-group">
+       <div class="col-md-6">
+         <!-- <h4>Voucher Amount : <span class="italic-text">{{service.voucherTotalDetails.totalVoucherAmount | currency:"INR"  }}</span></h4> -->
+       </div>
+       <div class="col-md-6">
+       <button type="button"  class="btn btn-primary pull-right" 
+       [disabled]="noEmpSelectedForVoucherCreation || service.disableButtonAndFields"
+       >Create Voucher</button>
+       <!-- (click)="createLeaveEncashVoucher()" -->
+       <!--  [permissions]="['su', 'F167P11_']" -->
+     </div>
+     </div>
+ </div>
+<!-- 
+<div class="row" *ngIf="service.showVoucherCreatedDetails">
+ <div class="col-md-12 form-group voucher"
+ *ngIf="leaveVoucherCreatedDetails.voucherDetails && service.showVoucherCreatedDetails && leaveVoucherCreatedDetails.successMessage">
+ <h4 class="heading-with-hr payment-submission" *ngIf="leaveVoucherCreatedDetails.successMessage">
+   <i class="fa fa-thumbs-o-up"></i>
+   Voucher Created Successfully
+ </h4>
+ <p>
+   {{
+     leaveVoucherCreatedDetails.voucherDetails.successMessage
+       }}
+ </p>
+ <p>
+   {{
+     leaveVoucherCreatedDetails.voucherDetails.voucherMessage
+       }}
+ </p>
+ <span *ngFor="let voucher of leaveVoucherCreatedDetails.voucherDetails;let i = index">
+   <a (click)="getVoucherDetails( i ,j)">
+     Voucher Name - {{ voucher.voucherName}} | Voucher Number -
+     {{
+       voucher.voucherNumber
+         }}
+     | Voucher Date -
+     {{
+       voucher.voucherDate
+         }}</a><br>
+ </span>
+</div>
+<div class="col-md-12 form-group voucher"
+ *ngIf="leaveVoucherCreatedDetails.voucherDetails && leaveVoucherCreatedDetails.successMessage ">
+ <button class="btn btn-primary" (click)="createAnotherVoucher(); service.showVoucherCreatedDetails = false"><i class="fa fa-home"></i> Go To Home</button>
+</div>
+</div> -->
+<!-- <ngx-smart-modal  #modalRefVoucherCreation identifier="voucherDetailsInCreation" >
+ <div class="header" style="margin-left: 5px;">
+   <h4 class="heading-with-hr">
+     Voucher Number :
+     {{ voucherDetailInModal.voucherNumber }}
+     | Voucher Date :
+     {{ voucherDetailInModal.voucherDate }}
+   </h4>
+ </div>
+ <div class="body">
+   <div class="row">
+       <div class="col-md-12">
+         <table class="table table-hover table-striped ">
+           <thead>
+             <tr>
+               <th>Ledger Id</th>
+               <th>Ledger Name</th>
+               <th>Cash Group</th>
+               <th numeric-column>Amount</th>
+               <th status-column>Dr/Cr</th>
+               <th>Narration</th>
+               <th>Created At</th>
+             </tr>
+           </thead>
+           <tbody>
+             <tr *ngFor="let voucher of voucherDetailsInCreation">
+
+               <td>{{ voucher.ledgerId }}</td>
+               <td>{{ voucher.ledgerName }}</td>
+               <td>{{ voucher.cashGroupName ? voucher.cashGroupName : "NA" }}</td>
+               <td numeric-column>{{ voucher.amount | currency : "INR" }}</td>
+               <td status-column>
+                 <span class="label" [ngClass]="{
+                           'label-success': voucher.transactionType == 'C',
+                           'label-danger': voucher.transactionType == 'D'
+                         }">
+                   {{ voucher.transactionType == "D" ? "Debit" : "Credit" }}
+                 </span>
+               </td>
+               <td>{{ voucher.narration }}</td>
+               <td>{{ voucher.createdAt }}</td>
+             </tr>
+           </tbody>
+         </table>
+       </div>
+     </div>
+   </div>
+   <div class="col-md-12">
+     <div style="border-top: 1px solid #ccc">
+       <div class="col-md-12" style="padding-top: 10px;padding-right: 0px;">
+         <button class="btn btn-danger pull-right" (click)="closeModal()">
+           Close
+         </button>
+       </div>
+     </div>
+ </div>  
+</ngx-smart-modal> -->

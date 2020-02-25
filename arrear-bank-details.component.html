@@ -1,0 +1,126 @@
+<form #arrear_bank_details="ngForm">
+  <div class="col-md-12 form-group ">
+    <h4 class="heading-with-hr">
+      Bank Details
+      <small>
+        <a role="button" style="color:#8e8e8e" class="pull-right " (click)="holdPreviousBankDetails(); service.showStep1=true;service.animationState = 'step1';
+          service.showStep2=false"><i class="fa fa-angle-left"></i> Prev
+        </a>
+      </small>
+    </h4>
+    <div class="row">
+      <div class="col-md-12 np-lr">
+        <div class="form-group col-md-6">
+          <label> Bank Ledger </label>
+          <ng-select name="bankledger" [items]="service.arrearManageobj.bankDetails" [bindLabel]="'bankName'"
+            [(ngModel)]="bankDetailObj.slctdBank" placeholder="Select Bank Name" required
+            (change)="resetBankDependentFields()">
+            <ng-template ng-label-tmp let-item="item">
+              <!-- <span>{{item.bankName}}</span> -->
+            </ng-template>
+            <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+              <!-- <span [ngOptionHighlight]="search">{{item.bankName}}</span> -->
+            </ng-template>
+          </ng-select>
+        </div>
+        <div class="form-group col-md-6">
+          <label>Ledger Account</label>
+          <input name="ledgeraccount" class="form-control" type="text" [(ngModel)]="service.ledgerAccount"
+            [readonly]="true" required />
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 np-lr">
+        <div class="col-md-3">
+          <label>Cheque Book Issuer</label>
+          <ng-select name="chequebookissuer" [items]="service.arrearManageobj.chequeIssuerListDetails"
+            [bindLabel]="'issuerFirstName'" [(ngModel)]="bankDetailObj.slctdChequeBookIssuer"
+            placeholder="Select Cheque Book Issuer Name" required>
+            <!-- (change)="getChequeBookForIssuer();" -->
+            <ng-template ng-label-tmp let-item="item">
+              <!-- <span>{{item.issuerFirstName}}</span> -->
+            </ng-template>
+            <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+              <!-- <span [ngOptionHighlight]="search">{{item.issuerFirstName}}</span> -->
+            </ng-template>
+          </ng-select>
+        </div>
+        <div class="col-md-3">
+          <label>Cheque Book</label>
+          <ng-select name="chequebook" [items]="service.arrearManageobj.chequeBookDetails"
+            [bindLabel]="'chequeStartNo'" [(ngModel)]="bankDetailObj.slctdChequeBook"
+            placeholder="Select Cheque Start No. - Cheque End No."
+             required>
+             <!-- (change)="getNextChequeNumberForManualChequeCreation()" -->
+            <ng-template ng-label-tmp let-item="item">
+              <!-- <span>{{item.chequeStartNo}}</span> -
+              <span>{{item.chequeEndNo}}</span> -->
+            </ng-template>
+            <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+              <!-- <span [ngOptionHighlight]="search">{{item.chequeStartNo}}</span> -
+              <span [ngOptionHighlight]="search">{{item.chequeEndNo}}</span> -->
+            </ng-template>
+          </ng-select>
+        </div>
+        <div class="col-md-3">
+          <label>Cash Group</label>
+          <input type="text" name="cashgroup" class="form-control" [(ngModel)]="service.cashGroupName" [readonly]="true"
+            required />
+        </div>
+        <div class="col-md-3">
+          <label>Cheque Date</label>
+          <div class="form-group">
+            <div class="input-group">
+              <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+              <ng-datepicker name="chequedate" [(ngModel)]="bankDetailObj.slctdChequeDate" [options]="chequeDateOptions"
+                required></ng-datepicker>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 np-lr">
+        <div class="col-md-3">
+          <label>Cheque Number</label>
+          <input type="text" name="chequenumber" class="form-control" [(ngModel)]="bankDetailObj.slctdChequeNumber"
+            [readonly]="true" placeholder="Waiting for cheque number" />
+        </div>
+        <div class="col-md-3">
+          <label>Payable Amount </label>
+          <input type="text" name="chequeamount" class="form-control"
+            [ngModel]="service.totalAmountPayable | currency: 'INR'" [ngModelOptions]="{ updateOn: 'blur' }"
+            [readonly]="true" />
+        </div>
+        <div class="col-md-6 form-group">
+          <label>Print Name</label>
+          <div class="input-group">
+            <div class="input-group-btn">
+              <button type="button" class="btn btn-default form-control">
+                <!-- (click)="resetPrintName()" -->
+                Reset Print Name
+              </button>
+            </div>
+            <input type="text" name="printname" class="form-control" [(ngModel)]="service.printName" required />
+            <div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+          <button type="button" class="btn btn-default" col-button-only>
+            <!-- (click)="holdPreviousBankDetails()" -->
+          <i class="fa fa-angle-left"></i> Prev
+        </button>
+          <button type="button" class="btn btn-primary pull-right" col-button-only
+           [disabled]="!bank_details.form.valid">
+           <!-- [permissions]='["su", "F167P11_"]' -->
+           <!-- (click)="createLeaveEncashPayment()" -->
+           Make Payment
+        </button>
+      </div>
+    </div>
+  </div>
+</form>

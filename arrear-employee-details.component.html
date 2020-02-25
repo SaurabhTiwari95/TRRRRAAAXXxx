@@ -1,0 +1,192 @@
+<div class="col-md-12 form-group">
+  <h4 class="heading-with-hr">Employee Details For Voucher Payment </h4>
+  <div class="panel-group" id="accordion1" *ngFor="let emp of service.empDetailsAccordingToBankArray ; let i = index">
+    <div class="panel panel-default">
+      <div class="panel-heading" style="border-bottom: 1px solid #ddd">
+        <h4 class="panel-title">
+          <div class="user-block np-lr">
+            <div class="input-group checkbox-only">
+              <div class="input-group-addon disable-checked-icheck">
+                <div class="icheckbox_flat-green checked" style="position: relative;">
+                  <label class="control control--checkbox">
+                    <input type="checkbox" name="selectBankChunk" [(ngModel)]="emp.slctdChunkOfBank"
+                      title="Click to select employees of particular bank." />
+                    <div class="control__indicator"></div>
+                  </label>
+                </div>
+              </div>
+
+              <span class="username" style="margin-left: 0px;">
+                <a data-toggle="collapse" data-parent="#accordion1" href="#collapseOne{{i}}"
+                  style="top: 10px;position: relative;" (click)="getIndexOfChunkSlctd(i);">
+                  <!-- {{emp.bankTitle}} -->
+                </a>
+              </span>
+              <!-- <span class="pull-right" style="position: relative;
+              top: -5px;">Total Employees Selected : <span
+                  class="italic-text">{{emp.totalEmployeeSlctd}}/{{ emp.totalEmployees }}</span></span> -->
+              <!-- <span class="pull-right" style="position: relative;
+              top: -5px;">Total Amount :
+                <span class="italic-text">{{ emp.totalAmountToShow | currency : "INR" }}</span>&nbsp; | &nbsp;</span> -->
+            </div>
+          </div>
+        </h4>
+      </div>
+      <div id="collapseOne{{i}}" class="panel-collapse collapse">
+        <div class="panel-body">
+          <div class="panel-group">
+            <div class="panel" style="box-shadow: none;">
+              <form #employee_table_according_bank="ngForm">
+                <div class="body">
+                  <div class="col-md-12">
+                    <div class="col-md-10"></div>
+                    <div class="col-md-2 np-lr">
+                      <input type="text" class="form-control" placeholder="Search Here"
+                        (keyup)='filterDatatable($event, i, emp)' style="width: 103%;">
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-12 np-lr">
+                  <ngx-datatable class="material" [columnMode]="'force'" [headerHeight]="50"
+                    [rows]="emp.filteredDataOfSlctdChunk" [limit]="10" [footerHeight]="50" [rowHeight]="'auto'"
+                    [scrollbarH]="true" inline-editable-table>
+                    <!-- [selectAllRowsOnPage]="false" -->
+                    <ngx-datatable-column name="" [flexGrow]="1" [maxWidth]="60" [sortable]="true" prop="allEmpSlctd">
+                      <ng-template let-column="column" let-value="value" ngx-datatable-header-template>
+                        <!-- let-selectFn="selectFn" -->
+                        <!-- let-allRowsSelected="allRowsSelected" -->
+                        <div class="input-group checkbox-only">
+                          <div class="input-group-addon disable-checked-icheck">
+                            <div class="icheckbox_flat-green checked" style="position: relative;">
+                              <label class="control control--checkbox">
+                                <input type="checkbox" name="selectAllEmployee" [(ngModel)]="emp.allEmpSlctd"
+                                  (change)="checkIfAllEmpSlctd(i);" title="Click to select all employees" />
+                                <div class="control__indicator "></div>
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+                      </ng-template>
+                      <ng-template let-row="row" let-rowIndex="rowIndex" let-value="value" ngx-datatable-cell-template>
+                        <div class="input-group checkbox-only">
+                          <div class="input-group-addon disable-checked-icheck">
+                            <div class="icheckbox_flat-green checked" style="position: relative;">
+                              <label class="control control--checkbox">
+                                <input type="checkbox" name="selectEmployee" [checked]="row.isSelected"
+                                  (change)="checkIfEmployeeSlctdForPaymentCreation(row, i ,$event)"
+                                  title="Click to select an employee for you don't want to make salary" />
+                                <div class="control__indicator">
+                                </div>
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+                      </ng-template>
+                    </ngx-datatable-column>
+
+                    <ngx-datatable-column name="Employee" [flexGrow]="1" [minWidth]="300" [sortable]="true"
+                      prop="employeeName">
+                      <ng-template let-row="row" ngx-datatable-cell-template>
+                        <!-- {{ row.employeeName }} ~ {{row.employeeId}} -->
+                      </ng-template>
+                    </ngx-datatable-column>
+
+                    <ngx-datatable-column name="Department" [minWidth]="250" [flexGrow]="1" [sortable]="true"
+                      prop="departmentName">
+                      <ng-template let-row="row" ngx-datatable-cell-template>
+                        <!-- {{ row.departmentName }} -->
+                      </ng-template>
+                    </ngx-datatable-column>
+
+                    <ngx-datatable-column name="Bank Name" [minWidth]="150" [flexGrow]="0.8"
+                      *ngIf="emp.bankTitle != 'Employee Without Bank Account Details'">
+                      <ng-template let-row="row" ngx-datatable-cell-template>
+                        <!-- {{ row.bankDetails.bankName }} -->
+                      </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Bank Name" [minWidth]="300" [flexGrow]="0.8"
+                      *ngIf="emp.bankTitle == 'Employee Without Bank Account Details'">
+
+                      <ng-template let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+                        <select class="form-control" name="bank{{rowIndex}}" style="width: 100%;"
+                          [(ngModel)]="row.slctdBank" (change)="editBankName(i,rowIndex)">
+                          <option value="undefined" selected disabled>Select Bank Name - Branch Name</option>
+                          <option *ngFor="let bank of service.getBankDetails" [ngValue]="bank">
+                            <!-- {{ bank.bankName }} -->
+                            <!-- <span *ngIf="bank.branchName">-</span>{{bank.branchName ? bank.branchName : ""}} -->
+                          </option>
+                        </select>
+                      </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Bank Account No." [minWidth]="150" [flexGrow]="1"
+                      *ngIf="emp.bankTitle != 'Employee Without Bank Account Details'">
+                      <ng-template let-row="row" ngx-datatable-cell-template class="numeric-column">
+                        <!-- {{ row.bankDetails.accountNumber }} -->
+                      </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Bank Account No." [minWidth]="200" [flexGrow]="1"
+                      *ngIf="emp.bankTitle == 'Employee Without Bank Account Details'">
+                      <ng-template let-row="row" let-value="value" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+                        <div style="margin-top: 10px;">
+                          <input type="number" class="editable form-control" name="field{{rowIndex}}"
+                            [value]="row.bankDetails.accountNumber" (input)="editBankAccNumber(i,row,$event )"
+                            placeholder="Enter Account No." minlength="12" maxlength="16" />
+                        </div>
+                        <span></span>
+                      </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="IFSC Code" [minWidth]="60" [flexGrow]="0.7"
+                      *ngIf="emp.bankTitle != 'Employee Without Bank Account Details'">
+                      <ng-template let-row="row" ngx-datatable-cell-template>
+                        <!-- {{ row.bankDetails.ifscCode &&  row.bankDetails.ifscCode || "NA"  }} -->
+                      </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="IFSC Code" [minWidth]="60" [flexGrow]="0.7"
+                      *ngIf="emp.bankTitle == 'Employee Without Bank Account Details'">
+                      <ng-template let-row="row" ngx-datatable-cell-template>
+                        <!-- {{ row.bankDetails.ifscCode && row.bankDetails.bankName.ifscCode || "NA"}} -->
+                      </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column [minWidth]="60" [flexGrow]="0.6" [sortable]="true" prop="encashedLeaves">
+                      <ng-template let-column="column" ngx-datatable-header-template>
+                        <span class="pull-right">
+                          Encashed EL(s)
+                        </span>
+                      </ng-template>
+                      <ng-template let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+                        <span class="pull-right">
+                          <!-- {{ row.encashedLeaves }} -->
+                        </span>
+                      </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column [minWidth]="150" [flexGrow]="1" [sortable]="true" prop="encashedAmountToShow">
+                      <ng-template let-column="column" ngx-datatable-header-template>
+                        <span class="pull-right">
+                          Encashed Amount
+                        </span>
+                      </ng-template>
+                      <ng-template let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+                        <span class="pull-right">
+                          <!-- {{ row.encashedAmountToShow }} -->
+                        </span>
+                      </ng-template>
+                    </ngx-datatable-column>
+                  </ngx-datatable>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-md-12">
+  <div class="col-md-12 np-lr">
+    <button class="btn btn-primary pull-right" (click)="checkIfEmployeeNotSlctdOnNextBtn(); "
+      [disabled]="service.disabledButtonAndField">
+      Next
+    </button>
+    <!-- service.animationState = 'step2' -->
+  </div>
+</div>
